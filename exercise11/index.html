@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>許願牆</title>
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .form-container {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+        }
+
+        input, textarea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .wish-card {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <h1>許願牆</h1>
+    
+    <div class="form-container">
+        <h2>許個願望</h2>
+        <form id="wishForm">
+            <input type="text" id="name" placeholder="您的名字" required>
+            <textarea id="message" placeholder="願望內容" rows="4" required></textarea>
+            <button type="submit">送出願望</button>
+        </form>
+    </div>
+
+    <div id="wishWall"></div>
+
+    <script>
+        // 獲取願望列表
+        function fetchWishes() {
+            fetch('http://localhost:3000/api/wishes')
+                .then(response => response.json())
+                .then(wishes => {
+                    const wall = document.getElementById('wishWall');
+                    wall.innerHTML = '';
+                    
+                    wishes.forEach(wish => {
+                        const card = document.createElement('div');
+                        card.className = 'wish-card';
+                        
+                        const date = new Date(wish.timestamp);
+                        card.innerHTML = `
+                            <h3>${wish.name}</h3>
+                            <p>${wish.message}</p>
+                            <div class="timestamp">${date.toLocaleString()}</div>
+                        `;
+                        
+                        wall.appendChild(card);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // 提交新願望
+        document.getElementById('wishForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const message = document.getElementById('message').value;
+
+            fetch('http://localhost:3000/api/wishes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('name').value = '';
+                document.getElementById('message').value = '';
+                fetchWishes();
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        // 初始載入
+        fetchWishes();
+    </script>
+</body>
+</html>

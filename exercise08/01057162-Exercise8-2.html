@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tokenizer</title>
+    <style>
+        div,
+        textarea {
+            border: solid 1px darkgray;
+            width: 80%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 200px;
+            overflow: scroll;
+        }
+
+        h3 {
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Keyword Extractor</h1>
+    <textarea id="inputText">Please input text here!</textarea>
+    <br>
+    <input type="button" id="convert" value="Extract Keywords" />
+    <h3>Extracted Keywords:</h3>
+    <div id="display"></div>
+    <script>
+        const stopWords = "'ll 's 'm a about above after again against all am an and any are aren't as at be because been before being below between both but by can can't cannot could couldn't did didn't do does doesn't doing don't down during each few for from further had hadn't has hasn't have haven't having he he'd he'll he's her here here's hers herself him himself his how how's i i'd i'll i'm i've if in into is isn't it it's its itself let's me more most mustn't my myself no nor not of off on once only or other ought our ours ourselves out over own same shan't she she'd she'll she's should shouldn't so some such than that that's the their theirs them themselves then there there's these they they'd they'll they're they've this those through to too under until up upon very was wasn't we we'd we'll we're we've were weren't what what's when when's where where's which while who who's whom why why's with won't would wouldn't you you'd you'll you're you've your yours yourself yourselves ### return arent cant couldnt didnt doesnt dont hadnt hasnt havent hes heres hows im isnt its lets mustnt shant shes shouldnt thats theres theyll theyre theyve though wasnt were werent whats whens wheres whos whys wont wouldnt youd youll youre youve".split(" ");
+        const re = /\s|;|,|:|\.|\(|\)/; //空白字元與主要標點符號，用以切割token
+
+        // 註冊convert button之事件處理器        
+        (function start() {
+            document.getElementById("convert").addEventListener("click", generateKeywords, false);
+        })();
+
+        // 將array轉成set以消除重複元素，並轉換出陣列uniqueTokens
+        function convertToUniqueTokens(tokens) {
+            let mySet = new Set(tokens);
+            return Array.from(mySet);
+        }
+
+        // 將uniqueTokens內不適合的token過濾掉。
+        // 如果token是數字或長度<=2，或是stop word (stopWords的元素)，就過濾掉。
+        function filterTokens(uniqueTokens) {
+            let filteredTokens = uniqueTokens.filter(token => {
+                // Check if the token is a number, has length <= 2, or is in the stop words list
+                return token.length > 2 && !stopWords.includes(token) && !isNaN(token) === false;
+            });
+            return filteredTokens;
+        }
+
+        // 只留存出現次數大於2的token，並加上出現次數，例如：olympic (20)
+        function produceKeywordsWithCount(filteredTokens, originalTokens) {
+            let tokenCount = {};
+
+            // Count each token's occurrence in the original text
+            originalTokens.forEach(token => {
+                if (filteredTokens.includes(token)) {
+                    tokenCount[token] = (tokenCount[token] || 0) + 1;
+                }
+            });
+
+            // Filter to include only tokens that appear more than once
+            let sortedResults = Object.entries(tokenCount)
+                .filter(([token, count]) => count > 2)
+                .map(([token, count]) => `${token} (${count})`)
+                .sort((a, b) => {
+                    const countA = parseInt(a.split('(')[1].split(')')[0]);
+                    const countB = parseInt(b.split('(')[1].split(')')[0]);
+                    return countB - countA;
+                });
+                
+            return sortedResults;
+        }
+
+        function generateKeywords() {
+            let text = document.getElementById("inputText").value;
+            // 根據re去切token
+            let tokens = text.toLowerCase().split(re);
+
+            let uniqueTokens = convertToUniqueTokens(tokens);
+            let filteredTokens = filterTokens(uniqueTokens);
+            let sortedResults = produceKeywordsWithCount(filteredTokens, tokens);
+
+            if (sortedResults.length != 0) {
+
+                // 將所有關鍵字以<br><hr>串接起來，並顯示div中。
+                const displayDiv = document.getElementById("display");
+                displayDiv.innerHTML = sortedResults.join("<br><hr>");
+
+            } else {
+                window.alert("No keywords extracted!");
+            }
+        }
+    </script>
+</body>
+
+</html>

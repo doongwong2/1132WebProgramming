@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>十八仔, sip-pat-a</title>
+    <style>
+        @import url(https://fonts.googleapis.com/earlyaccess/cwtexkai.css);
+
+        body {
+            font-family: "Noto Sans TC", Perpetua, serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        ol {
+            list-style-position: inside;
+            padding: 0;
+        }
+
+        li {
+            margin: 15px 0;
+            display: inline;
+        }
+
+        .dice {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-container {
+            margin-top: 20px;
+            display: flex;           
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: dodgerblue;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: rgba(30, 144, 255, 0.8);
+        }
+
+        #messages {
+            font-size: 150%;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: white;
+			width: 400px;
+            min-height: 180px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script>
+        const number = 4;
+        let dieImage = ["die1", "die2", "die3", "die4", "die5", "die6"];
+        let dieValue = [1, 2, 3, 4, 5, 6];
+
+    </script>
+</head>
+
+<body>
+    <ol>
+        <li><img src="blank.jpg" id="die1" class="dice" alt="骰子1"></li>
+        <li><img src="blank.jpg" id="die2" class="dice" alt="骰子2"></li>
+        <li><img src="blank.jpg" id="die3" class="dice" alt="骰子3"></li>
+        <li><img src="blank.jpg" id="die4" class="dice" alt="骰子4"></li>
+    </ol>
+
+    <div class="button-container">
+        <button id="rollButton" onclick = "roll()">Roll Dice</button>
+        <button id="cheatButton1" onclick = "oneColor()">Shortcut 1</button>
+        <button id="cheatButton2" onclick = "perfect18()">Shortcut 2</button>
+    </div>
+
+    <div id="messages"></div>
+
+    <script>
+        function roll()
+        {
+            console.log("roll");
+            document.getElementById("messages").innerHTML = '';
+            let dimSum = 0;
+            let dieArr = [0,0,0,0];
+
+            for(var i = 1;i <= 4;i++)
+            {
+                var rng = Math.floor(Math.random() * 6);
+                document.getElementById("die" + i).src = dieImage[rng] + ".jpg";
+                dieArr[i -1] = dieValue[rng];
+                dimSum += dieValue[rng];
+            }
+
+            if(dieArr[0] == dieArr[1] && dieArr[1] == dieArr[2] && dieArr[2] == dieArr[3]){
+                document.getElementById("messages").innerHTML = 'Congratulations! Your roll is "One Color"!<img src = "congrats.png" style = "width: 400px;">';
+                console.log("one color");
+            }
+
+            if(dieArr[0] != dieArr[1]  && dieArr[0] != dieArr[2] && dieArr[0] != dieArr[3] && dieArr[1] != dieArr[2] && dieArr[1] != dieArr[3] && dieArr[2] != dieArr[3])
+            {
+                document.getElementById("messages").innerHTML = 'Oops! Your roll is "No Face!"';
+                console.log("no face");
+            }
+
+            //perfect18 check
+            var ones = 0;
+            var sixes = 0;
+            for(var i = 0;i < 4;i++)
+            {
+                if(dieArr[i] == 1) {
+                    ones++;
+                }
+                if(dieArr[i] == 6) {
+                    sixes++;
+                }
+            }
+            if(ones == 2 && sixes == 2){
+                console.log("perfect 18 achieved");
+                document.getElementById("messages").innerHTML = 'Congratulations! Your roll is "Perfect Eighteen"!<img src = "congrats.png" style = "width: 400px;">';
+            }
+
+            var tally = [0,0,0,0,0,0];
+            for(var i =0;i < 4;i++) {
+                tally[dieArr[i] -1]++;
+            }
+            for(var i=0 ;i < 6;i++) {
+                if(tally[i] == 3) {
+                    console.log("no decision");
+                    document.getElementById("messages").innerHTML = 'No decision, please re-roll the dice!';
+                }
+
+                if(tally[i] == 2) {
+                    let score = 0;
+                    for(var j = 0;j < 4;j++) {
+                        if(dieArr[j] != i + 1) {
+                            score += dieArr[j];
+                        }
+                    }
+                    console.log("score is " + score);
+                    document.getElementById("messages").innerHTML = 'Your score is ' + score + "!";
+                }
+            }
+
+        }
+
+        function oneColor()
+        {
+            console.log("shortcut 1 - one color");
+
+            var rng6 = Math.floor(Math.random() * 6);
+            var rng4 = Math.floor((Math.random()* 3) + 2);
+            console.log(rng4);
+            document.getElementById("die1").src = dieImage[rng6] + ".jpg";
+            document.getElementById("die" + rng4).src = dieImage[rng6] +".jpg";
+            
+            rng6 = Math.floor(Math.random() * 6);
+            for(var i = 2;i <= 4;i++){
+                if(rng4 != i){
+                    document.getElementById("die" + i).src = dieImage[rng6] + ".jpg";
+                }
+            }
+
+            console.log("one color achieved");
+            document.getElementById("messages").innerHTML = 'Congratulations! Your roll is "One Color"!<img src = "congrats.png" style = "width: 400px;">';
+        }
+
+        function perfect18(){
+            console.log(oneOrsix);
+            var rng4 = Math.floor((Math.random() * 3) + 2);
+            var oneOrsix = Math.floor(Math.random() * 2);
+            
+            if(oneOrsix) {
+                document.getElementById("die1").src = dieImage[0] + ".jpg";
+                document.getElementById("die" + rng4).src = dieImage[0] + ".jpg";
+            }
+            else {
+                document.getElementById("die1").src = dieImage[5] + ".jpg";
+                document.getElementById("die" + rng4).src = dieImage[5] + ".jpg";
+            }
+
+
+            for(var i = 2;i <= 4;i++){
+                if(rng4 != i){
+                    if(oneOrsix) {
+                        document.getElementById("die" + i).src = dieImage[5] + ".jpg";
+                    }
+                    else {
+                        document.getElementById("die" + i).src = dieImage[0] + ".jpg";
+                    }
+                    
+                }
+            }
+            console.log("perfect 18 achieved");
+            document.getElementById("messages").innerHTML = 'Congratulations! Your roll is "Perfect Eighteen"!<img src = "congrats.png" style = "width: 400px;">';
+        }
+
+    </script>
+</body>
+
+</html>

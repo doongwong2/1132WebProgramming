@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Local Storage</title>
+    <style type="text/css">
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            background-color: lightblue;
+            font-family: Perpetua;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+            padding: 4px;
+        }
+
+        th {
+            text-align: center;
+            color: white;
+            background-color: darkblue;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        .oddrow{
+            background-color: white;
+        }
+
+        .evenrow{
+            background-color: lightblue;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="#">
+        <p>
+            <label>Book Title: </label><input type="text" id="book">
+            <label>Author(s): </label><input type="text" id="author">
+            <label>Year: </label><input type="number" id="year">
+            <label>Book URL: </label><input type="url" id="url">
+        </p>
+        <p>
+            <input type="button" value="Add New Item" id="addButton" onclick="AddBook()">
+            <input type="button" value="Remove All Items" id="removeAllButton" onclick="ClearAll()">
+        </p>
+    </form>
+    <hr>
+    <div id="display">
+        <table id="bookTable">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Year</th>
+                    <th>URL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- New rows will be appended here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript">            
+        let row = 0;
+
+        window.onload = function() {
+            const saveBook = JSON.parse(localStorage.getItem('books')) || [];
+            saveBook.forEach(book => {
+                if(book.key && book.key.startsWith("ntou-")) {
+                    addToTable(book);     
+                }
+            });
+        }
+
+        function  addToTable(book) {
+            // Create a new table row (<tr>)
+                const newRow = document.createElement("tr");
+
+                if(row % 2 === 0) {
+                    newRow.classList.add("oddrow");
+                }
+                else {
+                    newRow.classList.add("evenrow");
+                }
+                row++;
+
+                // Create <td> elements for each input field
+                const tdTitle = document.createElement("td");
+                tdTitle.textContent = book.title;
+
+                const tdAuthor = document.createElement("td");
+                tdAuthor.textContent = book.author;
+
+                const tdYear = document.createElement("td");
+                tdYear.textContent = book.year;
+
+                const tdUrl = document.createElement("td");
+                const link = document.createElement("a");
+                link.href = book.url;
+                link.textContent = book.url;
+                link.target = "_blank";
+                tdUrl.appendChild(link);
+
+                // Append <td> elements to the new row
+                newRow.appendChild(tdTitle);
+                newRow.appendChild(tdAuthor);
+                newRow.appendChild(tdYear);
+                newRow.appendChild(tdUrl);
+
+                // Append the new row to the table body
+                const tableBody = document.querySelector("#bookTable tbody");
+                tableBody.appendChild(newRow);
+        }
+
+        function AddBook() {
+
+            // Get input values
+            const book = new Object();
+            book.key = "ntou-" + Date.now();
+            book.title = document.getElementById("book").value;
+            book.author = document.getElementById("author").value;
+            book.year = document.getElementById("year").value;
+            book.url = document.getElementById("url").value;
+
+            // Check if all fields are filled out
+            if (!book.title || !book.author || !book.year || !book.url) {
+                alert("Please fill out all fields!");
+                return;
+            }
+
+            addToTable(book);
+
+            // Optionally clear input fields after adding the book
+            document.getElementById("book").value = "";
+            document.getElementById("author").value = "";
+            document.getElementById("year").value = "";
+            document.getElementById("url").value = "";
+
+            //save to local storage
+            const saveBook = JSON.parse(localStorage.getItem('books')) || [];
+            saveBook.push(book);
+            localStorage.setItem("books", JSON.stringify(saveBook));
+
+            console.log("Book added: ", book);
+        }
+
+        function ClearAll() {
+            window.alert("All items were removed!");
+
+            // Clear all table rows (except the header)
+            const tableBody = document.querySelector("#bookTable tbody");
+            tableBody.innerHTML = ""; // This clears all rows
+
+            localStorage.removeItem('books');
+            row = 0;
+            console.log("All items cleared.");
+        }
+    </script>
+</body>
+
+</html>

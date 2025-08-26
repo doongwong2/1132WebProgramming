@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Simple Animation</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .image {
+            position: absolute;
+            max-width: 40%;
+            max-height: 20%;
+        }
+    </style>
+	<script>
+		const picAry = new Array("microsoft", "google", "yahoo", "facebook", "apple");
+	</script>
+</head>
+
+<body>
+	<div class= "image-container "id="canvas"></div>
+
+    <script>
+        const container = document.getElementById("canvas");
+
+        function createImage(src) {
+            const img = document.createElement('img');
+            img.src = src + '.png';
+            img.classList.add('image');
+
+            return img;
+        }
+
+        function randomizePos(img) {
+            const x = Math.floor(Math.random() * (window.innerWidth - 200));
+            const y = Math.floor(Math.random() * (window.innerHeight - 200));
+
+            img.style.left = `${x}px`;
+            img.style.top = `${y}px`;
+        }
+
+        picAry.forEach(src => {
+            const img = createImage(src);
+            container.appendChild(img);
+            randomizePos(img);
+        })
+
+        setInterval (() => {
+            const allImages = document.querySelectorAll('.image');
+            allImages.forEach(img => {
+                randomizePos(img);
+            });
+        }, 2000);
+    </script>
+</body>
+
+</html>

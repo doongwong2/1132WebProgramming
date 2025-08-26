@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Pin Pictures</title>
+    <style type="text/css">
+        div.nav {
+            border: 1px solid skyBlue;
+            margin-left: 3px;
+            padding: 3px;
+            float: left;
+        }
+
+        input,
+        p,
+        li {
+            font-family: Helvetica,
+                "Microsoft YaHei", "LiHei Pro", TW-Kai;
+        }
+
+        li {
+            font-size: 12px;
+        }
+
+        #blackboard {
+            position: relative;
+            z-index: 0;
+            width: 800px;
+            height: 600px;
+        }
+
+        .picture {
+            position: absolute;
+            z-index: 1;
+            width: 200px;
+            height: 200px;
+        }
+
+        .pin {
+            position: absolute;
+            width: 30px;
+            z-index: 2;
+        }
+
+        .image {
+            z-index: 1;
+
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="blackboard" ondrop = "handleDrop(event)" ondragover = "allowDrop(event)">
+        <img id = "blackboard" src="blackboard.jpg" height="600" width="800" style="float:left; z-index:0;" />
+        <img id="img-0" class="picture" style="top: 50px; left: 50px; z-index:1;" src="doraemon.png" />
+        <img id="pin-0" class="pin" style="top: 40px; left: 135px; z-index:1;" width="30px" src="red.png" />
+
+    </div>
+
+    <div id="nav" class="nav">
+        <form action="#">
+            <p>
+                <label>要放哪個道具圖片(請輸入編號):
+                    <input type="number" id="pic" min="1" max="10" step="1" value="1" />
+                </label>
+                <br />
+                <label>圖片X座標:
+                    <input type="number" id="x" min="40" max="600" step="1" value="40" />
+                </label>
+                <br />
+                <label>圖片Y座標:
+                    <input type="number" id="y" min="40" max="400" step="1" value="100" />
+                </label>
+            </p>
+            <p>
+                <input type="button" value="新增圖片" id="addButton">
+                <input type="button" value="移除所有圖片" id="removeAllButton">
+            </p>
+        </form>
+        <ul>
+            <li>[01]任意門</li>
+            <li>[02]時光機</li>
+            <li>[03]竹蜻蜓</li>
+            <li>[04]時光布</li>
+            <li>[05]記憶麵包</li>
+            <li>[06]縮小燈</li>
+            <li>[07]翻譯蒟蒻</li>
+            <li>[08]如果電話亭</li>
+            <li>[09]穿透環</li>
+            <li>[10]更衣照相機</li>
+        </ul>
+    </div>
+
+    <script>
+        const blackboard = document.getElementById("blackboard");
+        const tools = ['01.png', '02.png', '03.png', '04.png', '05.png', '06.png', '07.png', '08.png', '09.png', '10.png'];
+        const pinImage = ['blue.png', 'red.png', 'yellow.png'];
+
+        function createImage(src, className, x, y) {
+            const img = document.createElement('img');
+            img.src = src;
+            img.classList.add(className);
+            img.style.left = `${x}px`;
+            img.style.top = `${y}px`;
+            img.draggable = true;
+            img.id = `img-${Date.now()}`;
+
+            img.addEventListener('dragstart',handleDrag);
+            return img;
+        }
+
+        function saveToLocalStorage(imagesData) {
+            localStorage.setItem("imagesData", JSON.stringify(imagesData));
+        }
+
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem("imagesData");
+            return savedData ? JSON.parse(savedData) : [];
+        }
+
+        function appendImage() {
+            const tool = document.getElementById("pic");
+            let toolWanted = parseInt(tool.value) - 1;
+            const x = parseInt(document.getElementById("x").value);
+            const y = parseInt(document.getElementById("y").value);
+            const img = createImage(tools[toolWanted], 'picture', x, y);
+            blackboard.appendChild(img);
+
+            let RNG = Math.floor(Math.random() * 3);
+            const pin = document.createElement('img');
+            pin.classList.add('pin');
+            pin.src = pinImage[RNG];
+            pin.style.left = `${x + 90}px`;
+            pin.style.top = `${y - 10}px`;
+            pin.width = 30;
+
+            blackboard.appendChild(pin);
+
+            const imagesData = loadFromLocalStorage();
+            imagesData.push({ src: tools[toolWanted], x, y, pin: pinImage[RNG] });
+            saveToLocalStorage(imagesData);
+        }
+
+        function clearAll() {
+            localStorage.removeItem("imagesData");
+            const images = document.querySelectorAll('.picture');
+            images.forEach(image => image.remove());
+            location.reload();
+        }
+
+        function loadSavedImages() {
+            const imagesData = loadFromLocalStorage();
+            imagesData.forEach(data => {
+                const img = createImage(data.src, 'picture', data.x, data.y);
+                blackboard.appendChild(img);
+            });
+        }
+
+        function handleDrag(event) {
+            event.dataTransfer.setData('text', event.target.id);
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+
+            const x = event.offsetX;
+            const y = event.offsetY;
+
+            const id = event.dataTransfer.getData('text');
+            const draggedElement = document.getElementById(id);
+
+            draggedElement.style.left = `${x - draggedElement.width /2}px`;
+            draggedElement.style.top = `${y - draggedElement.height / 2}px`;
+
+            const pin = draggedElement.querySelector('.pin');
+            pin.style.left = `${x + 90}px`;
+            pin.style.top =`${y - 10}px`;
+            
+            
+            const imagesData = loadFromLocalStorage();
+            const imageIndex = imagesData.findIndex(img => img.src === draggedElement.src);
+            if(imageIndex > -1) {
+                imagesData[imageIndex].x = x - draggedElement.width/2;
+                imagesData[imageIndex].y = y - draggedElement.height/2;
+                saveToLocalStorage(imagesData);
+            }
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        document.getElementById("addButton").addEventListener("click", appendImage);
+        document.getElementById("removeAllButton").addEventListener("click", clearAll);
+
+        window.onload = loadSavedImages;
+    </script>
+</body>
+
+</html>
