@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 5-2</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <label for="length">Side Length (<=10):</label>
+        <input type="number" name="length" id="length">
+        <button type="button" onclick="BaseTri()" name="baseTri" id="baseTri">Draw Baseball Triangle</button>
+        <button type="button" onclick="BaseSq()" name="baseSq" id="baseSq">Draw Baseball Square</button>
+        <button type="button" onclick="SpSq()" name="SpSq" id="SpSq">Draw Special Square</button>   
+    </div>
+
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <script>
+        let lastValidLength = 5;
+        let alertShown = false;
+
+        function Check() {
+            let len = parseInt(document.getElementById("length").value);
+            if (isNaN(len) || len < 0 || len > 10) {
+                if (!alertShown) { // Show alert only if it hasn't been shown yet
+                    alert("Invalid length value, setting length to 5.");
+                    alertShown = true;
+                }
+                return lastValidLength;
+            }
+            alertShown = false;
+            lastValidLength = len;
+            return len;
+        }
+
+        function BaseTri() {
+            const len = Check();
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            const baseball = new Image();
+            const blank = new Image();
+
+            baseball.src = "baseball.jpg";
+            blank.src = "blank.png";
+
+            baseball.onload = () => {
+                blank.onload = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let row = 0; row < len; row++) {
+                        for (let col = 0; col < len; col++) {
+                            if (col < len - row - 1) {
+                                ctx.drawImage(blank, col * 50, row * 50, 50, 50); 
+                            } else {
+                                ctx.drawImage(baseball, col * 50, row * 50, 50, 50);
+                            }
+                        }
+                    }
+                    console.log("Flipped triangle drawn!");
+                };
+            };
+        }
+
+        function BaseSq() {
+            const len = Check();
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            const baseball = new Image();
+            baseball.src = "baseball.jpg";
+
+            baseball.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let row = 0; row < len; row++) {
+                    for (let col = 0; col < len; col++) {
+                        ctx.drawImage(baseball, col * 50, row * 50, 50, 50);
+                    }
+                }
+                console.log("Square drawn!");
+            };
+        }
+
+        function SpSq() {
+            const len = Check();
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            const baseball = new Image();
+            const spball = new Image();
+            baseball.src = "baseball.jpg";
+            spball.src = "baseball-x.jpg";
+
+            baseball.onload = () => {
+                spball.onload = () => {
+                    ctx.clearRect(0,0, canvas.width, canvas.height);
+                    for(let row = 0; row < len; row++) {
+                        for(let col = 0;col < len;col++) {
+                            let p = RNG(3);
+                            if(p == 0){
+                                ctx.drawImage(spball,col *50, row * 50, 50,50);
+                            }
+                            else {
+                                ctx.drawImage(baseball,col *50, row * 50, 50,50);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function RNG(max)
+        {
+            return Math.floor(Math.random() * max);
+        }
+
+    </script>
+</body>
+</html>

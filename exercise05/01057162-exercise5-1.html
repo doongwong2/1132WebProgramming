@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Basic DOM and function</title>
+    <style type="text/CSS">
+        body {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .calculator {
+            display: flex;
+            flex-direction: column;
+            width: 200px;
+        }
+
+        input, select, button {
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 120%;
+            width: 200px;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .result {
+            font-size: 120%;     
+            padding: 10px;
+            border: 3px solid #ddd;
+            width: 200px;
+            text-align: center;
+            box-sizing: border-box;
+         }
+
+	</style>
+</head>
+
+<body>
+    <h3>Simple Calculator</h3>
+    <div class="calculator">
+    </div>
+    <div><input type = "number" id = "num1" name = "num1" placeholder = "Input first number" style = "width:185px"></div>
+    <div>
+        <select name = "operator" id = "operator" style = "width: 200px">
+            <option value = "plus">+</option>
+            <option value = "minus">-</option>
+            <option value = "times">*</option>
+            <option value = "divide">/</option>
+        </select>
+    </div>
+    <div><input type = "number" id = "num2" name = "num2" placeholder = "Input second number" style = "width:185px"></div>
+    <div>
+        <button onclick = "calculate()">Calculate</button>
+    </div>
+    <div id="result" class="result">
+        <p>Results</p>
+    </div>
+
+    <script type="text/javascript">
+        function calculate()
+        {
+            var num1 = parseInt(document.getElementById("num1").value);
+            var num2 = parseInt(document.getElementById("num2").value);
+            console.log(num1, num2,document.getElementById("operator").value);
+            var result = 0;
+            switch(document.getElementById("operator").value)
+            {
+                case 'plus':
+                    result = num1 + num2;break;
+                case 'minus':
+                    result = num1 - num2;break;
+                case 'times':
+                    result = num1 * num2;break;
+                case 'divide':
+                    if(num2 == 0)
+                    {
+                        result = "Dividing by 0 is invalid";
+                    }
+                    else
+                    {
+                        result = num1 / num2;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            document.getElementById("result").innerHTML = result.toPrecision((10));
+        }
+
+    </script>
+
+</body>
+
+</html>

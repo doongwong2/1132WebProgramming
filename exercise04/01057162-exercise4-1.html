@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <style>
+        h1{
+            font-style: helvetica;
+        }
+        .span1
+        {
+            color: firebrick;
+            font-weight: thick;
+        }
+        .span2
+        {
+            color: navy;
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+<body>
+    <script type = "text/javascript">
+        var name;
+        var year;
+        const currentYr = new Date();
+        var currentYrInt = currentYr.getFullYear();
+    
+        name = window.prompt("Please enter your name:");
+        year = window.prompt("Please enter your year of birth");
+        console.log(name);
+        console.log(year);
+        console.log(currentYr);
+    
+        var yearInt = parseInt(year);
+        var age = currentYrInt - yearInt;
+        console.log(age);
+
+        document.write("<h1>Hello, <span class = span1>" + name + "</span> !<br>");
+        console.log("Hello, " + name);
+
+        if(age <= 0)
+        {
+            document.write("Your age is a mystery!");
+            console.log("Your age is a mystery!");
+            window.alert("Your input is incorrect!");
+        }
+        if(age == 1)
+        {
+            document.write("You are <span class = span2>one</span> year old!");
+            console.log("You are one year old!");
+        }
+        else if(age > 0)
+        {
+            document.write("You are <span class = span2>" + age + "</span> years old!");
+            console.log("You are " + age + " years old!");
+        }
+
+    </script>
+</body>
+</html>
