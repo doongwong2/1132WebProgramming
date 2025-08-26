@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>HTML Form</title>
+
+
+</head>
+<style>
+p::first-letter{
+    font-size: 1.5em;
+}
+</style>
+<body>
+    <form method = "post" action = "https://form2024-ab36688fcb48.herokuapp.com/submitForm" autocomplete="on" style = "font-family:Perpetua ; font-size: 1.3em">
+        <p>
+            <label>Your name:
+                <input type = "fullname"  name = "fullname" style = "color:blue ;font-weight: 600"/>
+            </label>
+        </p>
+        <p>
+            <label>Your email:
+                <input type = "email" name = "email" placeholder = "name@domain.com" required style = "color:blue ;font-weight: 600"/>
+            </label>
+        </p>
+        <p>
+            <label>Your homepage's URL:
+                <input type = "url" name = "url"  placeholder = "http://www.domainname.com" style = "color:blue ;font-weight: 600"/>
+            </label>
+        </p>
+        <p>
+            <label>Your birthday date:
+                <input type = "date" name = "date" style = "color:blue ;font-weight: 600"/>
+            </label>
+        </p>
+        <p>
+            <label>Your favorite color:
+                <input type = "color" name = "color" autofocus />
+            </label>
+        </p>
+        <p>
+            <label>Your Department:
+                <input type = "department" name = "department" style = "color:blue ;font-weight: 600" list = "departments" size = "70"/>
+                <datalist id = "departments">
+                    <option value = "Department of Aquaculture"></option>
+                    <option value = "Department of Bioscience and Biotechnology"></option>
+                    <option value = "Department of Communications, Navigation and Control Engineering"></option>
+                    <option value = "Department of Computer Science and Engineering"></option>
+                    <option value = "Department of Electrical Engineering"></option>
+                    <option value = "Department of Environmental Biology and Fisheries Science"></option>
+                    <option value = "Department of Food Science"></option>
+                    <option value = "Department of Harbor and River Engineering"></option>
+                    <option value = "Department of Marine Engineering"></option>
+                    <option value = "Department of Marine Environmental Informatics"></option>
+                    <option value = "Department of Mechanical and Mechatronic Engineering"></option>
+                    <option value = "Department of Merchant Marine"></option>
+                    <option value = "Department of Optoelectronics and Materials Technology"></option>
+                    <option value = "Department of Shipping and Transportation Management"></option>
+                    <option value = "Department of Systems Engineering and Naval Architecture"></option>
+                    <option value = "Department of Transportation Science"></option>
+                </datalist>
+            </label>
+        </p>
+        <p>
+            <strong><em>Check off all of the characteristics that you enjoyed about the college:</em></strong><br />
+        </p>
+        <p>
+            <input type = "checkbox" id = "campus" name = "likes" value = "Campus" style = "color:blue">
+            <label for = "campus">Campus
+            </label>
+            <input type = "checkbox" id = "students" name = "likes" value = "Students" style = "color:blue">
+            <label for = "students">Students
+            </label>
+            <input type = "checkbox" id = "location" name = "likes" value = "Location" style = "color:blue">
+            <label>Location
+            </label>
+        </p>
+        <p><strong><em>How did you become interested in our college?</em></strong><br />
+        </p>
+        <p>
+            <input type = "radio" id = "friends" name = "interest" value = "Friends" style = "color:blue">
+            <label>Friends
+            </label>
+            <input type = "radio" id = "television" name = "interest" value = "Television" style = "color:blue">
+            <label>Television
+            </label>
+            <input type = "radio" id = "internet" name = "interest" value = "Internet" style = "color:blue">
+            <label>Internet
+            </label>
+        </p>
+        <p>
+            <input type = "submit" value = "Submit" style = "color:firebrick"/>
+            <input type = "reset" value = "Clear" style = "color:firebrick"/>
+        </p>
+    </form>
+</body>
+
+</html>
